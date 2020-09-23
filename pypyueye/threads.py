@@ -112,7 +112,7 @@ class SaveThread(GatherThread):
 
 
 class RecordThread(GatherThread):
-    def __init__(self, cam, path, use_memory=False, nmb_frame=10, copy=True,
+    def __init__(self, cam, path, use_memory=False, frps=24, nmb_frame=10, copy=True,
                  verbose=False):
         """
         Thread used to record videos.
@@ -123,6 +123,7 @@ class RecordThread(GatherThread):
         self.verbose = verbose
         self.ind_frame = 0
         self.path = path
+        self.frps = frps
         # Create videowriter instance if needed
         if not self.use_memory:
             self.vw = self.open_video_writer()
@@ -130,10 +131,10 @@ class RecordThread(GatherThread):
 
     def open_video_writer(self):
         aoi = self.cam.get_aoi()
-        fourcc = cv2.VideoWriter_fourcc("M", "P", "E", "G")
+        fourcc = cv2.VideoWriter_fourcc("M", "J", "P", "G")
         return cv2.VideoWriter(self.path,
                                fourcc=fourcc,
-                               fps=24,
+                               fps=self.frps,
                                frameSize=(aoi.width, aoi.height),
                                isColor=0)
     def process(self, imdata):
